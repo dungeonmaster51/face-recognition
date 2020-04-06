@@ -28,22 +28,23 @@ def recognise_faces(img):
 def main():
     args = parse_args()
     preprocess = preprocessing.ExifOrientationNormalize()
-    img = Image.open(args.image_path)
-    filename = img.filename
-    img = preprocess(img)
-    img = img.convert('RGB')
+    for name in os.listdir(args.image_path):
+        img = Image.open(os.path.join(args.image_path, name))
+        filename = img.filename
+        img = preprocess(img)
+        img = img.convert('RGB')
 
-    faces, img = recognise_faces(img)
-    if not faces:
-        print('No faces found in this image.')
+        faces, img = recognise_faces(img)
+        if not faces:
+            print('No faces found in this image.')
 
-    if args.save_dir:
-        basename = os.path.basename(filename)
-        name = basename.split('.')[0]
-        ext = basename.split('.')[1]
-        img.save('{}_tagged.{}'.format(name, ext))
+        if args.save_dir:
+            basename = os.path.basename(filename)
+            name = basename.split('.')[0]
+            ext = basename.split('.')[1]
+            img.save('{}_tagged.{}'.format(name, ext))
 
-    img.show()
+        img.show()
 
 
 if __name__ == '__main__':
